@@ -1,4 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'Login.dart';
 
 class Settings extends StatefulWidget {
   static String routeName = "/settings";
@@ -15,7 +19,9 @@ class _SettingsState extends State<Settings> {
       appBar: AppBar(
         actions: [
           GestureDetector(
-            onTap: () async {},
+            onTap: () async {
+              signOut();
+            },
             child: const Padding(
               padding: EdgeInsets.only(right: 15.0),
               child: Icon(
@@ -30,5 +36,13 @@ class _SettingsState extends State<Settings> {
         child: Text("Settings"),
       ),
     );
+  }
+
+  signOut() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('uid');
+    await FirebaseAuth.instance.signOut();
+    Navigator.of(context).pushNamedAndRemoveUntil(
+        Login.routeName, (Route<dynamic> route) => false);
   }
 }
